@@ -132,4 +132,25 @@ for (i in 2:n_iteration) {
 tail(theta_iteration)
 ```
 
-Discussion: the true theta would be around 0 and a little bit less than 0 (from the plot). So from our results, starting point -1 and 0 did a great job. The mean of data is not a good starting point. We should set the starting point close to what we guess from the plot.
+Discussion: the true theta would be around 0 and a little bit less than 0 (from the plot). So from our results, starting point -1 and 0 did a great job. Newton-Raphson method is very sensitive to the starting points. The mean of data is not a good starting point. We should set the starting point close to what we guess from the plot.
+
+#### (b)
+Use Bisection method with starting points -1 and 1.
+```{r question 1 b}
+L = -1
+U = 1
+n_iteration = 100000
+theta_iteration = numeric(n_iteration)
+for (i in 1:n_iteration) {
+  theta_iteration[i] = (L + U)/2
+  eval_1 = l_derivative_1(x_value, theta_iteration[i])
+  eval_2 = l_derivative_1(x_value, L)
+  eval_3 = eval_1 * eval_2
+  if(eval_3 < 0) {
+    U = theta_iteration[i]
+  } else {L = theta_iteration[i]}
+}
+
+tail(theta_iteration)
+```
+
