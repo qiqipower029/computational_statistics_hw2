@@ -15,15 +15,46 @@ library(tidyverse)
 ## Question 1
 
 #### (a)
+Plot the log likelihood function.
 ```{r question 1 a}
 # Import data
-x_value = c(1.77, -0.23, 2.76, 3.80, 3.47, 56.75, -1.34, 4.24, -2.44, 3.29, 3.71, -2.40, 4.53, -0.07, -1.05, -13.87, -2.53, -1.75, 0.27, 43.21)
+x_value = c(1.77, -0.23, 2.76, 3.80, 3.47, 
+            56.75, -1.34, 4.24, -2.44, 3.29, 
+            3.71, -2.40, 4.53, -0.07, -1.05, 
+            -13.87, -2.53, -1.75, 0.27, 43.21)
 
 # Define the log likelihood function
+log_likelihood = function(x, theta) {
+  l = -20*log(pi) - sum(log(1+(x-theta)^2))
+  return(l)
+} 
 
+# Define the first derivative function of the log likelihood function
+l_derivative_1 = function(x, theta) {
+  l_1 = 2*sum((x-theta)/(1+(x-theta)^2))
+  return(l_1)
+}
+
+# Define the second derivative function of the log likelihood function
+l_derivative_2 = function(x, theta) {
+  l_2 = 2*sum(((x-theta)^2-1)/(1+(x-theta)^2)^2)
+  return(l_2)
+}
 
 # Graph the log likelihood function
-x_range = seq(-20, 20, 0.001)
-
+theta_range = seq(-20, 20, 0.001)
+n_loop = length(theta_range)
+log_likelihood_value = numeric(n_loop)
+for (i in 1:n_loop) {
+  log_likelihood_value[i] = log_likelihood(x_value, theta_range[i])
+}
+result_l = cbind(theta_range, log_likelihood_value) %>% as.data.frame()
+result_l %>% 
+  ggplot(aes(x = theta_range, y = log_likelihood_value)) + geom_point(alpha = 0.01) +
+  theme_bw() + labs(
+    x = "theta",
+    y = "log likelihood function"
+  )
 ```
 
+Find the MLE for theta using Newton-Raphson method.
