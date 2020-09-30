@@ -53,7 +53,8 @@ result_l %>%
   ggplot(aes(x = theta_range, y = log_likelihood_value)) + geom_point(alpha = 0.01) +
   theme_bw() + labs(
     x = "theta",
-    y = "log likelihood function"
+    y = "log likelihood function",
+    title = "Plot of log likelihood function"
   )
 ```
 
@@ -137,6 +138,7 @@ Discussion: the true theta would be around 0 and a little bit less than 0 (from 
 #### (b)
 Use Bisection method with starting points -1 and 1.
 ```{r question 1 b}
+# Starting points = -1 and 1
 L = -1
 U = 1
 n_iteration = 100000
@@ -152,5 +154,135 @@ for (i in 1:n_iteration) {
 }
 
 tail(theta_iteration)
+
+# Starting points = 1 and 2
+L = 1
+U = 2
+n_iteration = 100000
+theta_iteration = numeric(n_iteration)
+for (i in 1:n_iteration) {
+  theta_iteration[i] = (L + U)/2
+  eval_1 = l_derivative_1(x_value, theta_iteration[i])
+  eval_2 = l_derivative_1(x_value, L)
+  eval_3 = eval_1 * eval_2
+  if(eval_3 < 0) {
+    U = theta_iteration[i]
+  } else {L = theta_iteration[i]}
+}
+
+tail(theta_iteration)
+
+# Starting points = 50 and 52
+L = 50
+U = 55
+n_iteration = 100000
+theta_iteration = numeric(n_iteration)
+for (i in 1:n_iteration) {
+  theta_iteration[i] = (L + U)/2
+  eval_1 = l_derivative_1(x_value, theta_iteration[i])
+  eval_2 = l_derivative_1(x_value, L)
+  eval_3 = eval_1 * eval_2
+  if(eval_3 < 0) {
+    U = theta_iteration[i]
+  } else {L = theta_iteration[i]}
+}
+
+tail(theta_iteration)
+```
+
+Bisection method sometimes still fails to find the globlal maximum. Since it would be easier to get the local maximum near the starting points, sometimes it is possible to converge to a local maximum. Moreover, Bisection method might be slower than Newton-Raphson method.
+
+#### (c)
+Apply fixed-point iterations, starting from -1, with and without scaling.
+```{r question 1 c}
+# Define the g function
+g_function = function(theta, alpha) {
+  g_value = theta + alpha*l_derivative_1(x_value, theta)
+  return(g_value)
+}
+# Without scaling (alpha = 1)
+n_iteration = 2000000
+theta_iteration = numeric(n_iteration)
+theta_iteration[1] = -1
+for (i in 2:n_iteration) {
+  theta_iteration[i] = g_function(theta_iteration[i-1], 1)
+}
+
+tail(theta_iteration)
+
+# Alpha = 0.64
+n_iteration = 100000
+theta_iteration = numeric(n_iteration)
+theta_iteration[1] = -1
+for (i in 2:n_iteration) {
+  theta_iteration[i] = g_function(theta_iteration[i-1], 0.64)
+}
+
+tail(theta_iteration)
+
+
+# Alpha = 0.25
+n_iteration = 100
+theta_iteration = numeric(n_iteration)
+theta_iteration[1] = -1
+for (i in 2:n_iteration) {
+  theta_iteration[i] = g_function(theta_iteration[i-1], 0.25)
+}
+
+tail(theta_iteration)
+
+head(theta_iteration)
+```
+
+With the same starting point -1, the more shrinkage we have on the original function, the faster we can reach the convergence of theta.
+
+```{r question 1 c addition}
+# Alpha = 0.25, starting point = 0
+n_iteration = 100
+theta_iteration = numeric(n_iteration)
+theta_iteration[1] = 0
+for (i in 2:n_iteration) {
+  theta_iteration[i] = g_function(theta_iteration[i-1], 0.25)
+}
+
+tail(theta_iteration)
+theta_iteration
+
+# Alpha = 0.25, starting point = 2
+n_iteration = 100
+theta_iteration = numeric(n_iteration)
+theta_iteration[1] = 2
+for (i in 2:n_iteration) {
+  theta_iteration[i] = g_function(theta_iteration[i-1], 0.25)
+}
+
+tail(theta_iteration)
+theta_iteration
+```
+
+Having the same scaling, convergence could be totally different with different starting point. So the choice of starting point is very important, and should be close to the global maximum.
+
+#### (d)
+Apply the secant method to estimate theta.
+```{r question 1 d}
+# Define the secant function
+secant_function = function(theta1, theta2) {
+  f_xi = l_derivative_1(x_value, theta2)
+  f_xi_1 = l_derivative_1(x_value, theta1)
+  theta_new = theta2 - f_xi*(theta2-theta1)/(f_xi-f_xi_1)
+  return(theta_new)
+}
+
+# Starting points = -2 and -1
+n_iteration = 10
+theta_iteration = numeric(n_iteration)
+theta_iteration[1] = -2
+theta_iteration[2] = -1
+for (i in 3:n_iteration) {
+  theta_iteration[i] = secant_function(theta_iteration[i-2], theta_iteration[i-1])
+}
+tail(theta_iteration)
+
+# Starting points = -3 and 3
 ```
 
