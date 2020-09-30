@@ -308,3 +308,8 @@ We get to the true convergence when starting points = -2 and -1. When the starti
 
 #### (e)
 Compare the speed and stability of these methods.
+
+* Newton-Raphson method is usually the fatest method than others, but it is also very sensitive to the starting points.
+* Fixed point method is the most stable one but it is slower, the scaling can ajust the speed to convergence.
+* Bisection method is also stable and slower.
+* Secant is also fast. However, after reaching convergence, the theta might becomes NaN, due to the zero in denominator.
