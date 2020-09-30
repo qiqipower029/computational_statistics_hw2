@@ -284,5 +284,27 @@ for (i in 3:n_iteration) {
 tail(theta_iteration)
 
 # Starting points = -3 and 3
+n_iteration = 10
+theta_iteration = numeric(n_iteration)
+theta_iteration[1] = -3
+theta_iteration[2] = 3
+for (i in 3:n_iteration) {
+  theta_iteration[i] = secant_function(theta_iteration[i-2], theta_iteration[i-1])
+}
+tail(theta_iteration)
+
+# Starting points = 50 and 55
+n_iteration = 10
+theta_iteration = numeric(n_iteration)
+theta_iteration[1] = 50
+theta_iteration[2] = 55
+for (i in 3:n_iteration) {
+  theta_iteration[i] = secant_function(theta_iteration[i-2], theta_iteration[i-1])
+}
+tail(theta_iteration)
 ```
 
+We get to the true convergence when starting points = -2 and -1. When the starting points are -3 and 3, or 50 and 55, we got the local maximum. So the starting points should be chosen carefully.
+
+#### (e)
+Compare the speed and stability of these methods.
