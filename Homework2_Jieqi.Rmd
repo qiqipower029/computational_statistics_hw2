@@ -360,7 +360,7 @@ result %>%
     title = "Plot of log likelihood function"
   )
 
-# Plot the log likelihood function
+# Plot the derivative of log likelihood function
 result %>% 
   ggplot(aes(x = x_range, y = l_derivative)) + geom_line(alpha= 0.5) +
   theme_bw() + labs(
@@ -373,12 +373,23 @@ result %>%
 #### (b)
 Find the method-of-moments estimator of $\theta$.
 The first theoretical moment about the origin is: $E(X)=\int^{\infty}_{-\infty}xf(x)dx=\int^{2\pi}_{0}x(1-cos(x-\theta))/2\pi dx=\frac{1}{2\pi}(sin(\theta)+2\pi^{2})$.
-Therefore, we have $sin\theta=2\pi(E(X)-\pi)$. So the method-of-moments estimator would be $\hat{\theta}=\arcsin(2\pi(E(X)-\pi))$.
+Therefore, we have $sin\theta=E(X)-\pi$. So the method-of-moments estimator would be $\hat{\theta}=\arcsin((E(X)-\pi))$.
 ```{r question 2 b}
 # MME of theta
-theta_mme = asin(2*pi*(mean(x_observed)-pi));theta_mme
+theta_mme = asin((mean(x_observed)-pi));theta_mme
 ```
 
 
 #### (c)
 Find the MLE for $\theta$ using the Newton-Raphson method.
+```{r question 2 c}
+n_iteration = 100
+theta_iteration = numeric(n_iteration)
+theta_iteration[1] = theta_mme
+# MME of theta as the starting point
+for (i in 2:n_iteration) {
+  theta_iteration[i] = theta_iteration[i-1] - l_derivative_1(x_observed, theta_iteration[i-1])/l_derivative_2(x_observed, theta_iteration[i-1])
+}
+theta_iteration
+```
+
