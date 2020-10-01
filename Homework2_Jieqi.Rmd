@@ -50,7 +50,7 @@ for (i in 1:n_loop) {
 }
 result_l = cbind(theta_range, log_likelihood_value) %>% as.data.frame()
 result_l %>% 
-  ggplot(aes(x = theta_range, y = log_likelihood_value)) + geom_point(alpha = 0.01) +
+  ggplot(aes(x = theta_range, y = log_likelihood_value)) + geom_line(alpha = 0.5) +
   theme_bw() + labs(
     x = "theta",
     y = "log likelihood function",
@@ -313,3 +313,72 @@ Compare the speed and stability of these methods.
 * Fixed point method is the most stable one but it is slower, the scaling can ajust the speed to convergence.
 * Bisection method is also stable and slower.
 * Secant is also fast. However, after reaching convergence, the theta might becomes NaN, due to the zero in denominator.
+
+## Question 2
+```{r question 2 data import}
+# Import data
+x_observed = c(3.91, 4.85, 2.28, 4.06, 3.70, 4.04, 5.46, 3.53, 2.28, 1.96, 2.53, 3.88, 2.22, 3.47, 4.82, 2.46, 2.99,
+2.54, 0.52, 2.50)
+
+# Define the log likelihood function
+l_function = function(x, theta) {
+  l_value = -20*log(2*pi) + sum(log(1-cos(x-theta)))
+  return(l_value)
+}
+
+# Define the 1st derivative of the log likelihood function
+l_derivative_1 = function(x, theta) {
+  l_der_value = -sum(sin(x-theta)/(1-cos(x-theta)))
+  return(l_der_value)
+}
+
+# Define the 2nd derivative of the log likelihood function
+l_derivative_2 = function(x, theta) {
+  l_second_der = sum(1/(1-cos(x-theta)))
+  return(l_second_der)
+}
+```
+
+#### (a)
+Plot the log likelihood function and the 1st derivative of the log likelihood function between $-\pi$ and $\pi$.
+```{r question 1 a plot}
+x_range = seq(-pi, pi, 0.01)
+l_value = numeric(length(x_range))
+l_derivative = numeric(length(x_range))
+for (i in 1:length(x_range)) {
+  l_value[i] = l_function(x_observed, x_range[i])
+  l_derivative[i] = l_derivative_1(x_observed, x_range[i])
+}
+result = cbind(x_range, l_value, l_derivative) %>% as.data.frame()
+
+# Plot the log likelihood function
+result %>% 
+  ggplot(aes(x = x_range, y = l_value)) + geom_line(alpha= 0.5) +
+  theme_bw() + labs(
+    x = "theta",
+    y = "log likelihood function",
+    title = "Plot of log likelihood function"
+  )
+
+# Plot the log likelihood function
+result %>% 
+  ggplot(aes(x = x_range, y = l_derivative)) + geom_line(alpha= 0.5) +
+  theme_bw() + labs(
+    x = "theta",
+    y = "first derivative of log likelihood function",
+    title = "Plot of 1st derivative of log likelihood function"
+  )
+```
+
+#### (b)
+Find the method-of-moments estimator of $\theta$.
+The first theoretical moment about the origin is: $E(X)=\int^{\infty}_{-\infty}xf(x)dx=\int^{2\pi}_{0}x(1-cos(x-\theta))/2\pi dx=\frac{1}{2\pi}(sin(\theta)+2\pi^{2})$.
+Therefore, we have $sin\theta=2\pi(E(X)-\pi)$. So the method-of-moments estimator would be $\hat{\theta}=\arcsin(2\pi(E(X)-\pi))$.
+```{r question 2 b}
+# MME of theta
+theta_mme = asin(2*pi*(mean(x_observed)-pi));theta_mme
+```
+
+
+#### (c)
+Find the MLE for $\theta$ using the Newton-Raphson method.
