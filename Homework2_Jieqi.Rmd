@@ -444,3 +444,18 @@ Find two starting values, as nearly equal as you can, for which the Newton–Rap
 From part (d), we could know that, we can split the range of [$-\pi,\pi$] as much as possible. We could assign the space as small as possible.
 
 ## Question 3
+#### (a)
+Use fixed point iteration with $G_1(x)$.
+```{r question 3 a}
+# Define g'(x)
+g_x_derivative = function(epsilon, x) {
+  g_x_value = 1628/x - 1013 - 3062*(1-epsilon)*exp(-x)/(epsilon+(1-epsilon)*exp(-x))
+  return(g_x_value)
+}
+
+# Define G1(x)
+G1_x = function(epsilon, x) {
+  G1_value = 
+}
+```
+
