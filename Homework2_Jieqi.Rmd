@@ -1,5 +1,5 @@
 ---
-title: "Homework2"
+title: "Homework 2"
 author: "Jieqi Tu"
 date: "9/28/2020"
 output: pdf_document
@@ -334,7 +334,7 @@ l_derivative_1 = function(x, theta) {
 
 # Define the 2nd derivative of the log likelihood function
 l_derivative_2 = function(x, theta) {
-  l_second_der = sum(1/(1-cos(x-theta)))
+  l_second_der = -sum(1/(1-cos(x-theta)))
   return(l_second_der)
 }
 ```
@@ -390,6 +390,57 @@ theta_iteration[1] = theta_mme
 for (i in 2:n_iteration) {
   theta_iteration[i] = theta_iteration[i-1] - l_derivative_1(x_observed, theta_iteration[i-1])/l_derivative_2(x_observed, theta_iteration[i-1])
 }
-theta_iteration
+tail(theta_iteration)
+
+# Starting point = -2.7
+theta_iteration = numeric(n_iteration)
+theta_iteration[1] = -2.7
+for (i in 2:n_iteration) {
+  theta_iteration[i] = theta_iteration[i-1] - l_derivative_1(x_observed, theta_iteration[i-1])/l_derivative_2(x_observed, theta_iteration[i-1])
+}
+tail(theta_iteration)
+
+# Starting point = 2.7
+theta_iteration = numeric(n_iteration)
+theta_iteration[1] = 2.7
+for (i in 2:n_iteration) {
+  theta_iteration[i] = theta_iteration[i-1] - l_derivative_1(x_observed, theta_iteration[i-1])/l_derivative_2(x_observed, theta_iteration[i-1])
+}
+tail(theta_iteration)
 ```
 
+When the starting value is MME, it converges to -0.011972.
+When the starting value is -2.7, it converges to -2.6667.
+When the starting value is 2.7, it converges to 2.873095.
+
+#### (d)
+Repeat part (c) using 200 equally spaced starting values between $-\pi$ and $\pi$.
+```{r question 2 d}
+# Create starting values
+start_values = seq(-pi, pi, length = 200)
+
+# Newton-Raphson method for each starting values
+convergence = numeric(200)
+n_iteration = 100
+theta_iteration = numeric(n_iteration)
+for (j in 1:200) {
+  # Set starting value
+  theta_iteration[1] = start_values[j]
+  # Find the convergence theta value
+  for (i in 2:n_iteration) {
+    theta_iteration[i] = theta_iteration[i-1] - l_derivative_1(x_observed, theta_iteration[i-1])/l_derivative_2(x_observed, theta_iteration[i-1])
+  }
+  convergence[j] = theta_iteration[100]
+}
+
+result_list = cbind(start_values, convergence)
+result_list %>% knitr::kable()
+```
+
+Discussion: Different starting values have different convergence of theta. However, only starting values from -0.8051318 to 0.4893938 lead to the true maximum.
+
+#### (e)
+Find two starting values, as nearly equal as you can, for which the Newton–Raphson method converges to two different solutions.
+From part (d), we could know that, we can split the range of [$-\pi,\pi$] as much as possible. We could assign the space as small as possible.
+
+## Question 3
