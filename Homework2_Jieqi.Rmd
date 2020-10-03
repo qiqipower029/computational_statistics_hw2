@@ -553,7 +553,40 @@ result %>% knitr::kable()
 
 #### (e)
 Use Newton-Raphson method with starting value = 1.5.
-```{r}
-
+```{r question 3 e}
+n_iteration = 20
+x_list = numeric(n_iteration)
+x_list[1] = 1.5 # Starting value = 1.5
+for (i in 2:n_iteration) {
+  x_list[i] = x_list[i-1] - g_x_derivative(0.61489, x_list[i-1]/g_x_derivative_2(0.61489, x_list[i-1]))
+}
+g_prime_x=g_x_derivative(0.61489, x_list)
+result = cbind(x_list, g_prime_x) %>% as.data.frame()
+result %>% knitr::kable()
 ```
 
+#### (f)
+Use secant method with starting value 1.5 and 1.49.
+```{r question 3 f}
+# Define the secant function
+secant_function = function(x_1, x_2) {
+  f_xi = g_x_derivative(0.61489, x_2)
+  f_xi_1 = g_x_derivative(0.61489, x_1)
+  x_new = x_2 - f_xi*(x_2-x_1)/(f_xi-f_xi_1)
+  return(x_new)
+}
+
+# Secant method with starting value = 1.5 and 1.49
+n_iteration = 10
+x_list = numeric(n_iteration)
+x_list[1] = 1.5
+x_list[2] = 1.49
+for (i in 3:n_iteration) {
+  x_list[i] = secant_function(x_list[i-2], x_list[i-1])
+}
+g_prime_x=g_x_derivative(0.61489, x_list)
+result = cbind(x_list, g_prime_x) %>% as.data.frame()
+result %>% knitr::kable()
+```
+
+#### (g)
