@@ -504,3 +504,42 @@ tail(x_list)
 The x values become NaN after a few iterations. So it is not convergent to some value with starting point 1.
 
 #### (c)
+Try $G_3(x)=x+\alpha g'(x),\alpha=1/1000$.
+```{r question 3 c}
+# Define G3(x)
+G3_x = function(epsilon, x, alpha) {
+  G3_value = x + alpha*(1628/x - 1013 - 3062*(1-epsilon)*exp(-x)/(epsilon+(1-epsilon)*exp(-x)))
+  return(G3_value)
+}
+
+# Fixed point iteration with scaling
+n_iteration = 100
+x_list = numeric(n_iteration)
+x_list[1] = 1
+for (i in 2:n_iteration) {
+  x_list[i] = G3_x(0.61489, x_list[i-1], 0.001)
+}
+tail(x_list)
+```
+
+After scaling with $\alpha=0.001$, it converges to 1.037536.
+
+#### (d)
+Newton-Raphson method using starting value 3.
+```{r question 3 d}
+# Define the second derivative of g(x)
+g_x_derivative_2 = function(epsilon, x) {
+  second_deri_value = 3062*(1-epsilon)*epsilon*exp(-x)/(epsilon+(1-epsilon)*exp(-x))^2-1628/x^2
+  return(second_deri_value)
+}
+
+# Newton-Raphson iteration with starting value 3
+n_iteration = 10
+x_list = numeric(n_iteration)
+x_list[1] = 3
+for (i in 2:n_iteration) {
+  x_list[i] = x_list[i-1] - g_x_derivative(0.61489, x_list[i-1]/g_x_derivative_2(0.61489, x_list[i-1]))
+}
+head(x_list)
+```
+
