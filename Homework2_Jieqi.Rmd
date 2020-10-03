@@ -455,7 +455,52 @@ g_x_derivative = function(epsilon, x) {
 
 # Define G1(x)
 G1_x = function(epsilon, x) {
-  G1_value = 
+  G1_value = 1628*(epsilon+(1-epsilon)*exp(-x))/(3062*(1-epsilon)*exp(-x)+1013*(epsilon+(1-epsilon)*exp(-x)))
+  return(G1_value)
 }
+
+# Plot the g'(x)
+x_range = seq(-20, 20, 0.1)
+g_prime_x = numeric(length(x_range))
+for (i in 1:length(x_range)) {
+  g_prime_x[i] = g_x_derivative(0.61489, x_range[i])
+}
+result = cbind(x_range, g_prime_x) %>% as.data.frame()
+result %>% 
+  ggplot(aes(x = x_range, y = g_prime_x)) + geom_line(alpha = 0.5) +
+  theme_bw()
+
+# Fixed point iteration with G1(x)
+n_iteration = 100
+x_list = numeric(n_iteration)
+x_list = 1 # Starting value is 1
+for (i in 2:n_iteration) {
+  x_list[i] = G1_x(0.61489, x_list[i-1])
+}
+tail(x_list)
 ```
 
+Using fixed point iteration, $G_1(x)$ converges to 1.037536 with starting value 1.
+
+#### (b)
+Demonstrate that $G_2(x)=x+g'(x)$ fails to converge.
+```{r question 3 b}
+# Define G2(x)
+G2_x = function(epsilon, x) {
+  G2_value = x + 1628/x - 1013 - 3062*(1-epsilon)*exp(-x)/(epsilon+(1-epsilon)*exp(-x))
+  return(G2_value)
+}
+
+# Fixed point iteration with G2(x)
+n_iteration = 100
+x_list = numeric(n_iteration)
+x_list[1] = 1 # Starting value = 1
+for (i in 2:n_iteration) {
+  x_list[i] = G2_x(0.61489, x_list[i-1])
+}
+tail(x_list)
+```
+
+The x values become NaN after a few iterations. So it is not convergent to some value with starting point 1.
+
+#### (c)
