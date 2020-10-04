@@ -669,8 +669,35 @@ result %>% knitr::kable()
 ```
 
 #### (j)
-Use Illinois method.
+Use Illinois method. Starting values = 1 and 2
 ```{r question 3 j}
-
+n_iteration = 10
+x_list = numeric(n_iteration)
+L = 1 # x0
+U = 2 # x1
+x_list[1] = U  
+FL = g_x_derivative(0.61489, L)
+FU = g_x_derivative(0.61489, U)
+for (i in 2:n_iteration) {
+  x_list[i] = (L*FU - U*FL)/(FU-FL)
+  eval = g_x_derivative(0.61489, x_list[i])*FL
+  
+  if(eval < 0) {
+    U = x_list[i]
+    FU = g_x_derivative(0.61489, U)
+    if (FU*g_x_derivative(0.61489, x_list[i-1])>0) {
+      FL = FL/2
+    }
+  } else {
+    L = x_list[i]
+    FL = g_x_derivative(0.61489, L)
+    if (FL*g_x_derivative(0.61489, x_list[i-1])>0) {
+      FU = FU/2
+    }
+  }
+}
+g_prime_x=g_x_derivative(0.61489, x_list)
+result = cbind(x_list, g_prime_x) %>% as.data.frame()
+result %>% knitr::kable()
 ```
 
