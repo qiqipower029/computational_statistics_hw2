@@ -341,7 +341,7 @@ l_derivative_2 = function(x, theta) {
 
 #### (a)
 Plot the log likelihood function and the 1st derivative of the log likelihood function between $-\pi$ and $\pi$.
-```{r question 1 a plot}
+```{r question 2 a plot}
 x_range = seq(-pi, pi, 0.01)
 l_value = numeric(length(x_range))
 l_derivative = numeric(length(x_range))
@@ -554,11 +554,11 @@ result %>% knitr::kable()
 #### (e)
 Use Newton-Raphson method with starting value = 1.5.
 ```{r question 3 e}
-n_iteration = 20
+n_iteration = 10
 x_list = numeric(n_iteration)
 x_list[1] = 1.5 # Starting value = 1.5
 for (i in 2:n_iteration) {
-  x_list[i] = x_list[i-1] - g_x_derivative(0.61489, x_list[i-1]/g_x_derivative_2(0.61489, x_list[i-1]))
+  x_list[i] = x_list[i-1] - g_x_derivative(0.61489, x_list[i-1])/g_x_derivative_2(0.61489, x_list[i-1])
 }
 g_prime_x=g_x_derivative(0.61489, x_list)
 result = cbind(x_list, g_prime_x) %>% as.data.frame()
@@ -646,8 +646,12 @@ result %>% knitr::kable()
 ```
 
 #### (i)
-Use secant-bracket method.
+Use secant-bracket method. The starting values are 1 and 2.
 ```{r question 3 i}
+n_iteration = 20
+x_list = numeric(n_iteration)
+L = 1 # 
+U = 2
 
 ```
 
