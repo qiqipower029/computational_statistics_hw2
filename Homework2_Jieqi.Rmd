@@ -648,10 +648,29 @@ result %>% knitr::kable()
 #### (i)
 Use secant-bracket method. The starting values are 1 and 2.
 ```{r question 3 i}
-n_iteration = 20
+n_iteration = 10
 x_list = numeric(n_iteration)
-L = 1 # 
-U = 2
+L = 1 # x0
+U = 2 # x1
+for (i in 1:n_iteration) {
+  x_list[i] = (L*g_x_derivative(0.61489, U)-U*g_x_derivative(0.61489, L))/(g_x_derivative(0.61489, U) - g_x_derivative(0.61489, L))
+  eval1 = g_x_derivative(0.61489, x_list[i])
+  eval2 = g_x_derivative(0.61489, L)
+  eval3 = eval1*eval2
+  if (eval3<0) {
+    U = x_list[i]
+  } else {
+    L = x_list[i]
+  }
+}
+g_prime_x=g_x_derivative(0.61489, x_list)
+result = cbind(x_list, g_prime_x) %>% as.data.frame()
+result %>% knitr::kable()
+```
+
+#### (j)
+Use Illinois method.
+```{r question 3 j}
 
 ```
 
