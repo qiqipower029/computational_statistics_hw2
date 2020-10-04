@@ -590,3 +590,35 @@ result %>% knitr::kable()
 ```
 
 #### (g)
+Use Muller's method. Choose your third starting value as 1.48.
+```{r question 3 g}
+# Initialization
+n_iteration = 10
+x_list = numeric(n_iteration)
+x_list[1] = 1.5
+x_list[2] = 1.49
+x_list[3] = 1.48
+
+# Define Muller's function
+muller_function = function(x1,x2,x3) {
+  f_i_2 = g_x_derivative(0.61489, x1)
+  f_i_1 = g_x_derivative(0.61489, x2)
+  f_i = g_x_derivative(0.61489, x3)
+  dd = (f_i - 2*f_i_1 + f_i_2)/(x3 - x1)
+  s = f_i - f_i_1 + (x3 - x1)/dd
+  q = (x3-x2)/(x2-x1)
+  A = q*f_i - q*(1+q)*f_i_1 + q^2*f_i_2
+  B = (2*q+1)*f_i-(1+q)^2*f_i_1+q^2*f_i_2
+  C = (1+q)*f_i
+  x4 = x3-(x3-x2)*2*C/(B+sign(s)*sqrt(B^2-4*A*C))
+  return(x4)
+}
+
+# Iterations
+for (i in 4:n_iteration) {
+  x_list[i] = muller_function(x_list[i-3], x_list[i-2], x_list[i-1])
+}
+g_prime_x=g_x_derivative(0.61489, x_list)
+result = cbind(x_list, g_prime_x) %>% as.data.frame()
+result %>% knitr::kable()
+```
