@@ -622,3 +622,32 @@ g_prime_x=g_x_derivative(0.61489, x_list)
 result = cbind(x_list, g_prime_x) %>% as.data.frame()
 result %>% knitr::kable()
 ```
+
+#### (h)
+Use bisection method. The starting values would be 1 and 2.
+```{r question 3 h}
+L = 1
+U = 2
+n_iteration = 25
+x_list = numeric(n_iteration)
+for (i in 1:n_iteration) {
+  x_list[i] = (L + U)/2
+  eval_1 = g_x_derivative(0.61489, x_list[i])
+  eval_2 = g_x_derivative(0.61489, L)
+  eval_3 = eval_1 * eval_2
+  if(eval_3 < 0) {
+    U = x_list[i]
+  } else {L = x_list[i]}
+}
+
+g_prime_x=g_x_derivative(0.61489, x_list)
+result = cbind(x_list, g_prime_x) %>% as.data.frame()
+result %>% knitr::kable()
+```
+
+#### (i)
+Use secant-bracket method.
+```{r question 3 i}
+
+```
+
