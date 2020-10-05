@@ -749,6 +749,13 @@ l_derivative_2 = function(theta) {
   return(derivative2)
 }
 
+# Define the Fisher function
+l_derivative_2_Fisher = function(theta) {
+  m_expected = sample_size * c((2+theta)/4, (1-theta)/4, (1-theta)/4, theta/4)
+  fisher = 4*(m_expected[1]/(2+theta)^2+(m_expected[2]+m_expected[3])/(1-theta)^2+m_expected[4]/theta^2)
+  return(fisher)
+}
+
 n_iteration = 7
 theta_list = numeric(n_iteration)
 theta_list[1] = 0.0570461 # Starting value = 0.0570461
@@ -756,13 +763,39 @@ for (i in 2:n_iteration) {
   theta_list[i] = theta_list[i-1] - l_derivative_1(theta_list[i-1])/l_derivative_2(theta_list[i-1])
 }
 score_values = l_derivative_1(theta_list)
-result = cbind(theta_list, score_values) %>% as.data.frame()
+obs_Hessian = -l_derivative_2(theta_list)
+exp_Hessian = l_derivative_2_Fisher(theta_list)
+result = cbind(theta_list, score_values, obs_Hessian, exp_Hessian) %>% as.data.frame()
 result %>% knitr::kable()
-std.error(theta_list)
+
+# Calculate the standard error
+var_NR = (exp_Hessian[n_iteration])^(-1)
+std_error_NR = sqrt(var_NR/sample_size);std_error_NR
 ```
 
-Use Fisher scoring to estimate theta.
+Use Fisher scoring to estimate theta with the same starting value.
 ```{r question 4 a Fisher}
+n_iteration = 10
+theta_list = numeric(n_iteration)
+theta_list[1] = 0.0570461 # Starting value = 0.0570461
+for (i in 2:n_iteration) {
+  theta_list[i] = theta_list[i-1] + l_derivative_1(theta_list[i-1])/l_derivative_2_Fisher(theta_list[i-1])
+}
+score_values = l_derivative_1(theta_list)
+obs_Hessian = -l_derivative_2(theta_list)
+exp_Hessian = l_derivative_2_Fisher(theta_list)
+result = cbind(theta_list, score_values, obs_Hessian, exp_Hessian) %>% as.data.frame()
+result %>% knitr::kable()
+
+# Calculate the standard error
+var_fisher = (exp_Hessian[n_iteration])^(-1)
+std_error_fisher = sqrt(var_fisher/sample_size);std_error_fisher
+```
+
+
+#### (b)
+Use Newton-Raphson method using starting value 0.5.
+```{r}
 
 ```
 
