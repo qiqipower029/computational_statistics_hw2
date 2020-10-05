@@ -735,7 +735,7 @@ plot_variables %>%
 
 From the plot, we could see that the global maximum is a bit greater than 0.
 
-Use Newton-Raphsom method to estimate theta.
+Use Newton-Raphsom method to estimate theta using unbiased estimate of theta.
 ```{r question 4 a NR}
 # Define the 1st derivative of log likelihood function
 l_derivative_1 = function(theta) {
@@ -795,7 +795,37 @@ std_error_fisher = sqrt(var_fisher/sample_size);std_error_fisher
 
 #### (b)
 Use Newton-Raphson method using starting value 0.5.
-```{r}
-
+```{r question 4 b NR}
+n_iteration = 10
+theta_list = numeric(n_iteration)
+theta_list[1] = 0.5 # Starting value = 0.5
+for (i in 2:n_iteration) {
+  theta_list[i] = theta_list[i-1] - l_derivative_1(theta_list[i-1])/l_derivative_2(theta_list[i-1])
+}
+score_values = l_derivative_1(theta_list)
+obs_Hessian = -l_derivative_2(theta_list)
+exp_Hessian = l_derivative_2_Fisher(theta_list)
+result = cbind(theta_list, score_values, obs_Hessian, exp_Hessian) %>% as.data.frame()
+result %>% knitr::kable()
 ```
 
+It converges to a incorrect root, as the range for theta is from 0 to 1.
+
+Use Fisher scoring method using starting value 0.5.
+```{r question 4 b fisher}
+n_iteration = 11
+theta_list = numeric(n_iteration)
+theta_list[1] = 0.5 # Starting value = 0.5
+for (i in 2:n_iteration) {
+  theta_list[i] = theta_list[i-1] + l_derivative_1(theta_list[i-1])/l_derivative_2_Fisher(theta_list[i-1])
+}
+score_values = l_derivative_1(theta_list)
+obs_Hessian = -l_derivative_2(theta_list)
+exp_Hessian = l_derivative_2_Fisher(theta_list)
+result = cbind(theta_list, score_values, obs_Hessian, exp_Hessian) %>% as.data.frame()
+result %>% knitr::kable()
+```
+
+Fisher scoring method can still converge to the correct root.
+
+## Question 5
