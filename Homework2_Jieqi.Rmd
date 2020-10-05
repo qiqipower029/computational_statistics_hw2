@@ -708,7 +708,7 @@ result %>% knitr::kable()
 ```{r import data}
 # Import data
 m = c(1997, 906, 904, 32)
-sample_size = sum(m_values); sample_size
+sample_size = sum(m); sample_size
 ```
 
 ```{r question 4 a plot}
