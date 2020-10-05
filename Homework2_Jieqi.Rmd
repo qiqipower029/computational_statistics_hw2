@@ -829,3 +829,58 @@ result %>% knitr::kable()
 Fisher scoring method can still converge to the correct root.
 
 ## Question 5
+Use Newton-Raphson method to find the estimated parameter.
+```{r question 5}
+# Import data
+j = 1:4
+y = c(76, 132, 15, 29)
+n = c(20959, 12937, 6826, 4191)
+x = matrix(c(
+  1, 0, 0,
+  1, 0, 1, 
+  1, 1, 0,
+  1, 1, 1
+), 4, 3, byrow = T)
+ 
+x = t(x) # Get the transpose of x
+
+# Define the log likelihood function
+log_L = function(beta) {
+  l_beta = apply((y-n)*beta%*%x, 1, sum)-apply(log(1+exp(-beta%*%x)), 1, sum)
+  return(l_beta)
+}
+
+# Define the 1st derivative of the log likelihood function
+l_derivative_1 = function(beta) {
+  p = 1/(1+exp(-beta%*%x))
+  derivative1 = -(n*p-y)%*%t(x)
+  return(derivative1)
+}
+
+l_derivative_2 = function(beta) {
+  p = 1/(1+exp(-beta%*%x))
+  derivative2 = -sum(n*p*(1-p))*x%*%t(x)
+  return(derivative2)
+}
+
+n_iteration = 120
+beta_list = matrix(0, n_iteration, 3)
+beta_list[1, ] = c(-5, 0, 0) # set starting value = 5, 0, 0
+for (i in 2:n_iteration) {
+  beta_list[i,] = beta_list[i-1,] - l_derivative_1(beta_list[i-1,])%*%solve(l_derivative_2(beta_list[i-1,]))
+  print(l_derivative_1(beta_list[i-1,]))
+}
+
+# Estimated beta
+beta_est = round(beta_list, 2); beta_est
+# Score 
+for (i in 1:n_iteration) {
+  print(l_derivative_1(beta_list[i,]))
+}
+
+# Hessian 
+for (i in 1:n_iteration) {
+  print(-l_derivative_2(beta_list[i,]))
+}
+```
+
