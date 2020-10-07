@@ -770,7 +770,7 @@ result %>% knitr::kable()
 
 # Calculate the standard error
 var_NR = (exp_Hessian[n_iteration])^(-1)
-std_error_NR = sqrt(var_NR/sample_size);std_error_NR
+std_error_NR = sqrt(var_NR);std_error_NR
 ```
 
 Use Fisher scoring to estimate theta with the same starting value.
@@ -789,7 +789,7 @@ result %>% knitr::kable()
 
 # Calculate the standard error
 var_fisher = (exp_Hessian[n_iteration])^(-1)
-std_error_fisher = sqrt(var_fisher/sample_size);std_error_fisher
+std_error_fisher = sqrt(var_fisher);std_error_fisher
 ```
 
 
